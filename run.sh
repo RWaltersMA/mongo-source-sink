@@ -120,6 +120,9 @@ curl -X GET "http://localhost:8083/connectors/" -w "\n"
 echo '''
 
 ==============================================================================================================
-Use <ctrl>-c to quit'''
+The local MongoDB cluster and Kafka broker is ready to receive data.
+==============================================================================================================
+
+Use <ctrl>-c to quit and shut down the docker containers'''
 
 read -r -d '' _ </dev/tty
