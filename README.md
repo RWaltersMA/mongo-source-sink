@@ -2,24 +2,25 @@
 
 This demo leverages docker and sets up the following infrastructure:
 
-A MongoDB Cluster (3 node replica set)
-Kafka Connect
-Kafka Broker
-Zookeeper
-Kafka Rest API
-Kafka Schema Registry
+* A MongoDB Cluster (3 node replica set)
+* Kafka Connect
+* Kafka Broker
+* Zookeeper
+* Kafka Rest API
+* Kafka Schema Registry
 
 There is a file called RUN.SH.  This file issues the docker-compose up as well as configures the local MongoDB cluster as a source and configures the cluster passed as a parameter as a sink.
 
-There is a python app that will randomly generate ficticious companies and generate stock prices every second for as long as the app is running.  These data are writen to the MongoDB cluster locally, since the MongoDB Connector is setup as a sink it will grab the values and push it into a topic on the Kafka cluster.
+There is a python app that will randomly generate ficticious companies and generate stock prices every second for as long as the app is running.  These data are writen to the MongoDB cluster locally, since the MongoDB Connector is setup as a source, the connector will listen to the insert events from MongoDB and push it into a topic on the Kafka cluster.
 
-The Sink will take the data in the topic and push it out to the cluster that is passed as a parameter on the RUN.SH command.  For demo purposes we are using a MongoDB Atlas cluster.
+The Connector is also configured as a Sink and will take data as it shows up in the topic and push it out to the cluster that was passed as the parameter on the RUN.SH command.  For demo purposes we are using a MongoDB Atlas cluster as the sink.
 
 ## Requirements
   - Docker 18.09+
   - Docker compose 1.24+
-  - [Kafkacat](https://github.com/edenhill/kafkacat) (optional)
+  - [Kafkacat](https://github.com/edenhill/kafkacat)
   - Python3 with pymongo
+  - MongoDB Atlas cluster (free tier works great)
   
 ## Running the demo
 ### 1. Download/Clone the docker files from the GitHub repository
@@ -55,14 +56,17 @@ If the RUN.SH scripts runs successfully it should will say it is ready for data.
 
 run `python3 realtime-mongo.py` in a new shell to start generating ficticuous security data.  The following are optional parameters 
 
--s    the number of financial symbols to generate (default is 10)
--c    mongodb connection string (default is localhost)
+Parameter | Description
+--------- | -----------
+-s|the number of financial symbols to generate (default is 10)
+-c|mongodb connection string (default is localhost)
 
 ### 2. View the topic messages
 
 You can confirm the source connector is working by reading messages from the Kafka Topic, "stockdata.Stocks.StockData". 
 
 `kafkacat -b 127.0.0.1:9092  -t stockdata.Stocks.StockData`
+
 …
 "{\"_id\": {\"$oid\": \"5e307e3940bacb724265e4a8\"}, \"company_symbol\": \"ISH\", \"company_name\": \"ITCHY STANCE HOLDINGS\", \"price\": 35.02, \"tx_time\": \"2020-01-28T18:32:25Z\"}"
 
