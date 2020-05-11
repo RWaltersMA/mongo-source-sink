@@ -73,13 +73,12 @@ rs.conf();'''
 echo "\nCleaning up local MongoDB databases (dropping Stocks database):"
 docker-compose exec mongo1 /usr/bin/mongo --eval '''db.runCommand( { dropDatabase: 1 } );''' Stocks
 
-echo "\nKafka Topics:"
-curl -X GET "http://localhost:8082/topics" -w "\n"
-
-echo "\nKafka Connectors:"
-curl -X GET "http://localhost:8083/connectors/" -w "\n"
-
 sleep 2
+echo "2=$2\n"
+if [ "$2" == "skip" ]
+then
+    echo '\nSkipping MongoDB Connector for Apache Kafka configuration'
+else
 echo "\nAdding MongoDB Kafka Source Connector for the 'stocks.stockdata' collection:"
 curl -X POST -H "Content-Type: application/json" --data '
   {"name": "mongo-source-stockdata",
@@ -97,6 +96,7 @@ curl -X POST -H "Content-Type: application/json" --data '
      "collection":"StockData"
 }}' http://localhost:8083/connectors -w "\n"
 
+
 echo "\nAdding MongoDB Kafka Sink Connector for the 'stockdata' topic into the 'stocks.stockdata' collection in Atlas"
 curl -X POST -H "Content-Type: application/json" --data '
   {"name": "mongo-atlas-sink",
@@ -112,9 +112,12 @@ curl -X POST -H "Content-Type: application/json" --data '
      "value.converter":"org.apache.kafka.connect.json.JsonConverter",
      "value.converter.schemas.enable":false
 }}' http://localhost:8083/connectors -w "\n"
-
+fi
 sleep 2
-echo "\nKafka Connectors: \n"
+echo "\nKafka Topics:"
+curl -X GET "http://localhost:8082/topics" -w "\n"
+
+echo "\nKafka Connectors:"
 curl -X GET "http://localhost:8083/connectors/" -w "\n"
 
 echo '''
