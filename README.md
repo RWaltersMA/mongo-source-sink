@@ -76,3 +76,16 @@ The MongoDB Connector for Apache Kafka is configured as a sink connector and wri
 
 # Troubleshooting
 Most failures occur because of network connectiviity issues.  If there is a failure check the docker logs of the containers to start troubleshooting.  Most failures occur with network connectivity issues between the connect container and MongoDB Atlas.  Remember to add the appropriate IP whitelist and Username to the Altas Cluster.
+
+
+# Convert tool
+I should probably change the name of this tool it doesn't really convery anything, rather it provides a fast way to configure the connectors in this setup.  type `sh convert.sh`to see a list of commands.
+
+Parameter | Attribute | Description
+--------- | ----------- | -------------------
+-d|(source, sink, or all)|deletes connector
+-l||lists connectors installe
+-a|(source or sink) (avro or json or string) (avro or json or string) (atlas connection if sink)|Add connector with type key value atlas.  example: `sh convert.sh -a source json json` adds a MongoDB source with key and vallue converters set to JSON no schema.  `sh convert.sh -a sink json json "mongodb connection URI goes here"`  creates a sink with key and value converter set to json no schema.
+-w||Write one document to local MongoDB
+
+
