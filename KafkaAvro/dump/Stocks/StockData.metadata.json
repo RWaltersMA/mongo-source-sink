@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"Stocks.StockData"}],"uuid":"3f291124aa784a2191b06361a0e38bc8"}
