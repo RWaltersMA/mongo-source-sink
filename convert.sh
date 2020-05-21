@@ -106,11 +106,12 @@ do
             docker stop zookeeper
             sleep 5
             docker stop broker
-            sleep 5
+            sleep 10
             docker start zookeeper
-            sleep 5
+            sleep 10
             docker start broker
-            sleep 5
+            sleep 10
+            docker restart connector
             exit 1
             ;;
      esac
